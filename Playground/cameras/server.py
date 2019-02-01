@@ -3,17 +3,17 @@ from http import status
 
 servers = []
 
-def callback(file, addr, server):
+def callback(file, addr, data):
 	if file in ["/index.html", "/"]:
-		print(f"{addr[0]} -> {status[200]} -> {server[0]}:{server[1]}{file}")
+		print(f"{addr[0]} -> {status[200]} -> {data[0][0]}:{data[0][1]}{file}")
 		return (status[200], "USB camera settings<br><a href='./config.json'>Config JSON</a><br><a href='settings.json'>Settings JSON</a>")
 		
 	elif file in ["/config.json", "/settings.json"]:
-		print(f"{addr[0]} -> {status[200]} -> {server[0]}:{server[1]}{file}")
+		print(f"{addr[0]} -> {status[200]} -> {data[0][0]}:{data[0][1]}{file}")
 		return (status[200], open("./configuration/camera" + file, "r").read().replace("\n", "\n\r"))
 		
 	else:
-		print(f"{addr[0]} -> {status[404]} -> {server[0]}:{server[1]}{file}")
+		print(f"{addr[0]} -> {status[404]} -> {data[0][0]}:{data[0][1]}{file}")
 		return (status[404], "404 Not Found")
 
 def spawn(count):

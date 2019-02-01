@@ -3,7 +3,8 @@ from threading import Thread
 
 status = {
 	200: "200 OK",
-	404: "404 NOT FOUND"
+	404: "404 NOT FOUND",
+	401: "401 Unauthorized"
 }
 
 def mkHeader(header):
@@ -33,9 +34,11 @@ class HTTPServer(object):
 			data = conn.recv(1024)
 			if not data: break
 			
-			file = data.decode().split(" ")[1]
+			headers = data.decode().split("\r\n")
 			
-			status, payload = self.callback(file, addr, self.server_info)
+			file = headers[0].split(" ")[1]
+			
+			status, payload = self.callback(file, addr, (self.server_info, headers))
 			
 			conn.send(f"HTTP/1.1 {status}\n\r".encode())
 			conn.send(b"Content-Type: text/html; charset=UTF-8\n\r\n\r")
